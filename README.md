@@ -1,12 +1,18 @@
 # Go Algorithm
 
-A collect of algorithms and  data structure implemented in Go.
+A collect of algorithms and data structure implemented in Go.
+
+The key differences between algorithm and data structure are as follows:
+
+| Feature | Data Structure Design | Algorithm Design |
+|---|---|---|
+| Primary Goal | Organize and store data | Solve a problem or perform a task |
+| Focus | Representation and storage of data | Step-by-step procedure |
+| Key Concerns | Efficiency of access and manipulation | Logic, efficiency, and correctness |
 
 ## Algorithm
 
 * [Sort](./sort/doc.md)
-
-
 
 ## Disclaimer
 
