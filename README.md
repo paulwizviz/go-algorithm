@@ -1,4 +1,4 @@
-# Go Algorithm
+# Go Algorithm and Data Structure
 
 A collect of algorithms and data structure implemented in Go.
 
