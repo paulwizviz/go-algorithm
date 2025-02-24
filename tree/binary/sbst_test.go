@@ -1,6 +1,7 @@
 package binary
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -98,7 +99,10 @@ func TestSBSTInsert(t *testing.T) {
 			Inputs: []int16{1, 2, 3},
 		},
 	}
-	for _, tc := range tcs {
-		tc.Test(t)
+	for i, tc := range tcs {
+		t.Run(fmt.Sprintf("Case %v", i), func(t *testing.T) {
+			tc.Test(t)
+		})
+
 	}
 }
