@@ -1,6 +1,7 @@
 package binary
 
 import (
+	"errors"
 	"fmt"
 	"testing"
 
@@ -28,6 +29,7 @@ func SBSTInsert[N numericType](root *Node[N], value N) {
 	}
 }
 
+// Testable represents testable asset
 type Testable interface {
 	Test(t *testing.T)
 }
@@ -104,5 +106,89 @@ func TestSBSTInsert(t *testing.T) {
 			tc.Test(t)
 		})
 
+	}
+}
+
+var ErrSearch = errors.New("search error")
+
+// SSBSTSearch performs search of Standard Binary Search Tree
+func SBSTSearch[N numericType](root *Node[N], value N) (*Node[N], error) {
+	if root == nil {
+		return nil, fmt.Errorf("%w", ErrSearch)
+	}
+	if value == root.value {
+		return root, nil
+	}
+	if value < root.value {
+		return SBSTSearch(root.left, value)
+	}
+	return SBSTSearch(root.right, value)
+}
+
+type SBSTSearchNotFoundTest[N numericType] struct {
+	f           func(*Node[N], N) (*Node[N], error)
+	searchParam N
+	inputs      []N
+}
+
+func (s SBSTSearchNotFoundTest[N]) Test(t *testing.T) {
+	var root *Node[N]
+	for i, input := range s.inputs {
+		if i == 0 {
+			root = &Node[N]{
+				value: input,
+			}
+		} else {
+			SBSTInsert(root, input)
+		}
+	}
+
+	got, gotErr := SBSTSearch(root, s.searchParam)
+	if assert.ErrorIs(t, gotErr, ErrSearch, fmt.Sprintf("Want: %v Got: %v", ErrSearch, gotErr)) {
+		assert.Empty(t, got, "Empty result expected")
+	}
+}
+
+type SBSTSearchFoundTest[N numericType] struct {
+	f           func(*Node[N], N) (*Node[N], error)
+	searchParam N
+	inputs      []N
+}
+
+func (s SBSTSearchFoundTest[N]) Test(t *testing.T) {
+	var root *Node[N]
+	for i, input := range s.inputs {
+		if i == 0 {
+			root = &Node[N]{
+				value: input,
+			}
+		} else {
+			SBSTInsert(root, input)
+		}
+	}
+
+	got, gotErr := SBSTSearch(root, s.searchParam)
+	if assert.ErrorIs(t, gotErr, nil, fmt.Sprintf("Want: %v Got: %v", nil, gotErr)) {
+		assert.Equal(t, s.searchParam, got.value, fmt.Sprintf("Want: %v Got: %v", s.searchParam, got.value))
+	}
+}
+
+func TestSBSTSearch(t *testing.T) {
+	testcases := []Testable{
+		SBSTSearchNotFoundTest[int16]{
+			f:           SBSTSearch[int16],
+			searchParam: 5,
+			inputs:      []int16{1, 2, 3, 7, 8},
+		},
+		SBSTSearchFoundTest[int16]{
+			f:           SBSTSearch[int16],
+			searchParam: 5,
+			inputs:      []int16{1, 2, 3, 5, 7, 8},
+		},
+	}
+	for i, tc := range testcases {
+		t.Run(fmt.Sprintf("case %d", i), func(t *testing.T) {
+			tc.Test(t)
+		})
 	}
 }
