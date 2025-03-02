@@ -296,3 +296,54 @@ func Example_bstPreorderTraversalSkewed() {
 	// Output:
 	// [1 2 3 4 5 6 7]
 }
+
+// BSTPostorderTraversal performs post order traversal
+func BSTPostorderTraversal[N numericType](root *Node[N]) []N {
+	if root == nil {
+		return []N{}
+	}
+
+	leftResult := BSTPostorderTraversal(root.left)
+	rightResult := BSTPostorderTraversal(root.right)
+
+	result := append(leftResult, rightResult...) // Left subtree, then right subtree
+	result = append(result, root.value)          // Finally, the root
+
+	return result
+}
+
+func Example_bstPostorderTraversalBalance() {
+	var root *Node[int16] = &Node[int16]{
+		value: 100,
+	}
+	BSTInsert(root, 20)
+	BSTInsert(root, 10)
+	BSTInsert(root, 30)
+	BSTInsert(root, 200)
+	BSTInsert(root, 150)
+	BSTInsert(root, 300)
+
+	result := BSTPostorderTraversal(root)
+	fmt.Println(result)
+
+	// Output:
+	// [10 30 20 150 300 200 100]
+}
+
+func Example_bstPostorderTraversalSkewed() {
+	var root *Node[int16] = &Node[int16]{
+		value: 1,
+	}
+	BSTInsert(root, 2)
+	BSTInsert(root, 3)
+	BSTInsert(root, 4)
+	BSTInsert(root, 5)
+	BSTInsert(root, 6)
+	BSTInsert(root, 7)
+
+	result := BSTPostorderTraversal(root)
+	fmt.Println(result)
+
+	// Output:
+	// [7 6 5 4 3 2 1]
+}
